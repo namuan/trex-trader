@@ -1,0 +1,7 @@
+requests
+telegram
+logzero
+git+https://github.com/ericsomdahl/python-bittrex@master
+python-telegram-bot
+expiringdict
+arrow
