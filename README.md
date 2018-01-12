@@ -14,11 +14,10 @@ Features list
 
 ### Configuration
 
-Copy env.cfg.sample file to env.cfg and configure appropriate values
-Values set for each configuration item should be without quotes.
+Copy env.cfg.sample file to env.cfg and configure appropriate values. 
+Values set for each configuration item should be without quotes. 
 
-Important:
-Please make sure that you DON'T give withdrawal permission to the API Key generated from Bittrex.
+*_Important:_ Please make sure that you DON'T give withdrawal permission to the API Key generated from Bittrex.*
 
 |Configuration Key | Notes  | 
 |---|---|
@@ -60,9 +59,9 @@ As mentioned above, please make sure that the API key generated on Bittrex don't
 
 ### Todo
 
-[ ] Add notes on setting up remote server
-[ ] Add notes on setting up ssh config and private/public key authentication
-[ ] Add notes on getting Telegram user id
+[ ] Add notes on setting up remote server 
+[ ] Add notes on setting up ssh config and private/public key authentication 
+[ ] Add notes on getting Telegram user id 
 
 ### Thanks
 
