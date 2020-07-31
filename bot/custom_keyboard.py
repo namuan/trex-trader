@@ -12,17 +12,19 @@ def keyboard_cmds():
         KeyboardButton("/market"),
         KeyboardButton("/buy"),
         KeyboardButton("/sell"),
-        KeyboardButton("/orders")
+        KeyboardButton("/orders"),
     ]
 
-    return ReplyKeyboardMarkup(build_menu(command_buttons, n_cols=3), resize_keyboard=True)
+    return ReplyKeyboardMarkup(
+        build_menu(command_buttons, n_cols=3), resize_keyboard=True
+    )
 
 
 # Generic custom keyboard that shows YES and NO
 def keyboard_confirm():
     buttons = [
         KeyboardButton(KeyboardEnum.YES.clean()),
-        KeyboardButton(KeyboardEnum.NO.clean())
+        KeyboardButton(KeyboardEnum.NO.clean()),
     ]
 
     return ReplyKeyboardMarkup(build_menu(buttons, n_cols=2), resize_keyboard=True)
@@ -31,22 +33,19 @@ def keyboard_confirm():
 def keyboard_buy_sell():
     buttons = [
         KeyboardButton(KeyboardEnum.BUY.clean()),
-        KeyboardButton(KeyboardEnum.SELL.clean())
+        KeyboardButton(KeyboardEnum.SELL.clean()),
     ]
 
-    cancel_btn = [
-        KeyboardButton(KeyboardEnum.CANCEL.clean())
-    ]
+    cancel_btn = [KeyboardButton(KeyboardEnum.CANCEL.clean())]
 
     return ReplyKeyboardMarkup(
-        build_menu(buttons, n_cols=2, footer_buttons=cancel_btn),
-        resize_keyboard=True
+        build_menu(buttons, n_cols=2, footer_buttons=cancel_btn), resize_keyboard=True
     )
 
 
 # Create a button menu to show in Telegram messages
 def build_menu(buttons, n_cols=1, header_buttons=None, footer_buttons=None):
-    menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
+    menu = [buttons[i : i + n_cols] for i in range(0, len(buttons), n_cols)]
 
     if header_buttons:
         menu.insert(0, header_buttons)

@@ -1,6 +1,6 @@
 env.cfg
 **/.dropbox_key
-pyenv/**
+venv/**
 docker/**
 *.db
 *.db.md

@@ -5,8 +5,8 @@ from telegram import KeyboardButton
 from config import log, bot_cfg
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
 
 
 # Decorator to restrict access if user is not the same as in config
@@ -37,13 +37,13 @@ def get_chat_id(update=None):
 # Remove trailing zeros to get clean values
 def trim_zeros(value_to_trim):
     if isinstance(value_to_trim, float):
-        return ('%.8f' % value_to_trim).rstrip('0').rstrip('.')
+        return ("%.8f" % value_to_trim).rstrip("0").rstrip(".")
     elif isinstance(value_to_trim, str):
         str_list = value_to_trim.split(" ")
         for i in range(len(str_list)):
             old_str = str_list[i]
             if old_str.replace(".", "").isdigit():
-                new_str = str(('%.8f' % float(old_str)).rstrip('0').rstrip('.'))
+                new_str = str(("%.8f" % float(old_str)).rstrip("0").rstrip("."))
                 str_list[i] = new_str
         return " ".join(str_list)
     else:
@@ -73,7 +73,7 @@ def regex_coin(coins):
 
 def percent_change_buttons():
     buttons = list()
-    for pct in ['1', '2', '5', '10', '20', '50', '100']:
+    for pct in ["1", "2", "5", "10", "20", "50", "100"]:
         buttons.append(KeyboardButton("+{}%".format(pct)))
 
     return buttons
@@ -81,7 +81,7 @@ def percent_change_buttons():
 
 def track_order_pct_change_buttons():
     buttons = list()
-    for pct in ['1', '2', '50', '10']:
+    for pct in ["1", "2", "50", "10"]:
         buttons.append(KeyboardButton("+{}%".format(pct)))
         buttons.append(KeyboardButton("-{}%".format(pct)))
 

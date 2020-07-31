@@ -22,19 +22,17 @@ def check_wallets():
         combined_balance_message = ["🗓 #Wallets ({})".format(dt)]
 
         for w in all_wallets:
-            currency = w.get('currency')
-            available_alts = w.get('available')
+            currency = w.get("currency")
+            available_alts = w.get("available")
 
-            msg = "*{}* ({})".format(
-                currency,
-                available_alts
-            )
+            msg = "*{}* ({})".format(currency, available_alts)
             combined_balance_message.append(msg)
 
         return "\n".join(combined_balance_message)
     except:
-        error_msg = "🚨 Error getting wallets." \
-                    "See logs for more info. " \
-                    "Exception details: {}".format(
-            sys.exc_info())
+        error_msg = (
+            "🚨 Error getting wallets."
+            "See logs for more info. "
+            "Exception details: {}".format(sys.exc_info())
+        )
         return error_msg

@@ -2,7 +2,7 @@ import logging
 import logzero
 from logzero import logger
 
-formatter = logging.Formatter('%(asctime)-15s: %(message)s')
+formatter = logging.Formatter("%(asctime)-15s: %(message)s")
 logzero.formatter(formatter)
 
 
