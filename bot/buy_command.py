@@ -1,5 +1,5 @@
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ParseMode
-from telegram.ext import CommandHandler, ConversationHandler, RegexHandler
+from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
 
 from config import market_summary_alt_coins
 from exchanges import bittrex
@@ -22,28 +22,28 @@ def buy_setup(dispatcher):
         entry_points=[CommandHandler("buy", buy_cmd, pass_chat_data=True)],
         states={
             WorkflowEnum.TRADE_CALCULATE_BUY_COST: [
-                RegexHandler(
-                    "^(" + regex_coin(market_summary_alt_coins()) + ")$",
+                MessageHandler(
+                    Filters.regex("^(" + regex_coin(market_summary_alt_coins()) + ")$"),
                     calculate_buy_order_size,
                     pass_chat_data=True,
                 ),
-                RegexHandler("^(CANCEL)$", cancel),
+                MessageHandler(Filters.regex("^(CANCEL)$"), cancel),
             ],
             WorkflowEnum.TRADE_SELECT_BUY_ORDER_SIZE: [
-                RegexHandler(
-                    "^\+(\d+)\%$",
+                MessageHandler(
+                    Filters.regex("^\+(\d+)\%$"),
                     change_order_size,
                     pass_chat_data=True,
-                    pass_groups=True,
                 ),
-                RegexHandler(
-                    "^([\d\.]+)\s+([\d\.]+)$",
+                MessageHandler(
+                    Filters.regex("^([\d\.]+)\s+([\d\.]+)$"),
                     change_order_size,
                     pass_chat_data=True,
-                    pass_groups=True,
                 ),
-                RegexHandler("^(BUY)$", place_buy_order, pass_chat_data=True),
-                RegexHandler("^(CANCEL)$", cancel),
+                MessageHandler(
+                    Filters.regex("^(BUY)$"), place_buy_order, pass_chat_data=True
+                ),
+                MessageHandler(Filters.regex("^(CANCEL)$"), cancel),
             ],
         },
         fallbacks=[CommandHandler("cancel", cancel)],

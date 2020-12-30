@@ -1,5 +1,5 @@
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ParseMode
-from telegram.ext import CommandHandler, ConversationHandler, RegexHandler
+from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
 
 from config import market_summary_alt_coins
 from exchanges import bittrex
@@ -21,12 +21,12 @@ def market_info_setup(dispatcher):
         entry_points=[CommandHandler("market", market_info_cmd, pass_chat_data=True)],
         states={
             WorkflowEnum.MARKET_INFO: [
-                RegexHandler(
-                    "^(" + regex_coin(market_summary_alt_coins()) + ")$",
+                MessageHandler(
+                    Filters.regex("^(" + regex_coin(market_summary_alt_coins()) + ")$"),
                     send_market_info_msg,
                     pass_chat_data=True,
                 ),
-                RegexHandler("^(CANCEL)$", cancel),
+                MessageHandler(Filters.regex("^(CANCEL)$"), cancel),
             ]
         },
         fallbacks=[CommandHandler("cancel", cancel)],

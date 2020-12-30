@@ -1,5 +1,5 @@
 from telegram import ParseMode
-from telegram.ext import CommandHandler, ConversationHandler, RegexHandler
+from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
 
 from exchanges import bittrex
 from . import WorkflowEnum
@@ -12,7 +12,9 @@ def cancel_order_setup(dispatcher):
         entry_points=[CommandHandler("cancel", cancel_order_cmd, pass_chat_data=True)],
         states={
             WorkflowEnum.ORDER_CANCEL: [
-                RegexHandler("^(YES|NO)$", order_cancel, pass_chat_data=True)
+                MessageHandler(
+                    Filters.regex("^(YES|NO)$"), order_cancel, pass_chat_data=True
+                )
             ]
         },
         fallbacks=[CommandHandler("cancel", cancel)],
