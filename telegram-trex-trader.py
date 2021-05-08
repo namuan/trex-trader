@@ -22,26 +22,29 @@ def handle_inline_option(bot, update, chat_data):
     )
 
 
-dispatcher.add_error_handler(handle_telegram_error)
+if __name__ == "__main__":
+    dispatcher.add_error_handler(handle_telegram_error)
 
-# Add command handlers to dispatcher
-dispatcher.add_handler(CommandHandler("start", start_cmd))
-dispatcher.add_handler(CommandHandler("restart", restart_cmd, pass_chat_data=True))
-dispatcher.add_handler(CommandHandler("shutdown", shutdown_cmd, pass_chat_data=True))
-dispatcher.add_handler(CommandHandler("wallets", wallets_cmd, pass_chat_data=True))
+    # Add command handlers to dispatcher
+    dispatcher.add_handler(CommandHandler("start", start_cmd))
+    dispatcher.add_handler(CommandHandler("restart", restart_cmd, pass_chat_data=True))
+    dispatcher.add_handler(
+        CommandHandler("shutdown", shutdown_cmd, pass_chat_data=True)
+    )
+    dispatcher.add_handler(CommandHandler("wallets", wallets_cmd, pass_chat_data=True))
 
-updater.dispatcher.add_handler(
-    CallbackQueryHandler(handle_inline_option, pass_chat_data=True)
-)
+    updater.dispatcher.add_handler(
+        CallbackQueryHandler(handle_inline_option, pass_chat_data=True)
+    )
 
-buy_setup(dispatcher)
-sell_setup(dispatcher)
-open_order_setup(dispatcher)
-cancel_order_setup(dispatcher)
-market_info_setup(dispatcher)
+    buy_setup(dispatcher)
+    sell_setup(dispatcher)
+    open_order_setup(dispatcher)
+    cancel_order_setup(dispatcher)
+    market_info_setup(dispatcher)
 
-updater.start_polling()
+    updater.start_polling()
 
-start_cmd(updater)
+    start_cmd(updater, None)
 
-updater.idle()
+    updater.idle()

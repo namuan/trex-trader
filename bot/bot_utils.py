@@ -11,8 +11,9 @@ logging.basicConfig(
 
 # Decorator to restrict access if user is not the same as in config
 def restrict_access(func):
-    def _restrict_access(bot, update, chat_data):
-        chat_id = get_chat_id(update)
+    def _restrict_access(update, context):
+        bot = context.bot
+        chat_id = update.effective_chat.id
         if str(chat_id) != bot_cfg("TELEGRAM_USER_ID"):
             # Inform owner of bot
             msg = "Access denied for user %s" % chat_id
@@ -21,17 +22,9 @@ def restrict_access(func):
             log.info(msg)
             return
         else:
-            return func(bot, update, chat_data)
+            return func(update, context)
 
     return _restrict_access
-
-
-# Return chat ID for an update object
-def get_chat_id(update=None):
-    if update.message:
-        return update.message.chat_id
-    elif update.callback_query:
-        return update.callback_query.from_user["id"]
 
 
 # Remove trailing zeros to get clean values
@@ -57,7 +50,7 @@ def bold(text):
 
 
 # Handle all telegram and telegram.ext related errors
-def handle_telegram_error(bot, update, error):
+def handle_telegram_error(update, error):
     error_str = "Update '%s' caused error '%s'" % (update, error)
     log.error(error_str)
 

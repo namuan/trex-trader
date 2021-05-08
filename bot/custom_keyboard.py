@@ -1,4 +1,9 @@
-from telegram import KeyboardButton, ReplyKeyboardMarkup
+from telegram import (
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
 from telegram.ext import ConversationHandler
 
 from config import market_summary_alt_coins
@@ -70,6 +75,6 @@ def coin_buttons_from_list(button_list):
 
 
 # Will show a cancel message, end the conversation and show the default keyboard
-def cancel(bot, update, text="Cancelled..."):
+def cancel(update, context, text="Cancelled..."):
     update.message.reply_text(text, reply_markup=keyboard_cmds())
     return ConversationHandler.END

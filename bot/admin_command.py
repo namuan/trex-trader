@@ -17,7 +17,7 @@ def shutdown():
     updater.is_idle = False
 
 
-def start_cmd(updater, bot=None, update=None):
+def start_cmd(updater, context):
     msg = "TrexTrader is running!\n"
     updater.bot.send_message(
         bot_cfg("TELEGRAM_USER_ID"), msg, reply_markup=keyboard_cmds()
@@ -25,7 +25,7 @@ def start_cmd(updater, bot=None, update=None):
 
 
 @restrict_access
-def shutdown_cmd(bot, update, chat_data):
+def shutdown_cmd(update, context):
     update.message.reply_text("Shutting down...", reply_markup=ReplyKeyboardRemove())
 
     # See comments on the 'shutdown' function
@@ -33,7 +33,7 @@ def shutdown_cmd(bot, update, chat_data):
 
 
 @restrict_access
-def restart_cmd(bot, update, chat_data):
+def restart_cmd(update, context):
     update.message.reply_text(
         "Bot is restarting...", reply_markup=ReplyKeyboardRemove()
     )

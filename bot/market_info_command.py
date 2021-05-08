@@ -35,7 +35,7 @@ def market_info_setup(dispatcher):
 
 
 @restrict_access
-def market_info_cmd(bot, update, chat_data):
+def market_info_cmd(update, context):
     reply_msg = "Choose currency"
 
     cancel_btn = [KeyboardButton(KeyboardEnum.CANCEL.clean())]
@@ -49,7 +49,7 @@ def market_info_cmd(bot, update, chat_data):
     return WorkflowEnum.MARKET_INFO
 
 
-def send_market_info_msg(bot, update, chat_data):
+def send_market_info_msg(update, context):
     currency = update.message.text
     pair_symbol = "BTC-{}".format(currency)
     market_data_msg = format_price_data(pair_symbol)

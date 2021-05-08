@@ -52,7 +52,7 @@ def sell_setup(dispatcher):
 
 
 @restrict_access
-def sell_cmd(bot, update, chat_data):
+def sell_cmd(update, context):
     reply_msg = "Choose currency"
 
     alt_wallets = [
@@ -72,14 +72,14 @@ def sell_cmd(bot, update, chat_data):
     return WorkflowEnum.TRADE_CALCULATE_SELL_COST
 
 
-def calculate_sell_order_size(bot, update, chat_data):
+def calculate_sell_order_size(update, context):
     currency = update.message.text
     coin_symbol = "BTC-{}".format(currency)
 
     price_info = bittrex.get_price(coin_symbol)
     if not price_info:
         return cancel(
-            bot, update, "Unable to retrieve price for {}".format(coin_symbol)
+            update, context, text="Unable to retrieve price for {}".format(coin_symbol)
         )
 
     bid_price = price_info.get("Bid")
@@ -88,7 +88,6 @@ def calculate_sell_order_size(bot, update, chat_data):
 
     if not available_in_balance:
         return cancel(
-            bot,
             update,
             "You do not have any coins available for {} in your wallet".format(
                 currency
@@ -112,9 +111,9 @@ def calculate_sell_order_size(bot, update, chat_data):
 
     cancel_btn = [KeyboardButton(KeyboardEnum.CANCEL.clean())]
 
-    chat_data["coin_symbol"] = coin_symbol
-    chat_data["quantity_to_sell"] = available_in_balance
-    chat_data["sell_price"] = bid_price
+    context.user_data["coin_symbol"] = coin_symbol
+    context.user_data["quantity_to_sell"] = available_in_balance
+    context.user_data["sell_price"] = bid_price
 
     reply_mrk = ReplyKeyboardMarkup(
         build_menu(buttons, n_cols=2, footer_buttons=cancel_btn), resize_keyboard=True
@@ -126,10 +125,10 @@ def calculate_sell_order_size(bot, update, chat_data):
     return WorkflowEnum.TRADE_CHANGE_SELL_PRICE
 
 
-def change_sell_price(bot, update, chat_data, groups):
-    coin_symbol = chat_data["coin_symbol"]
-    quantity_to_sell = chat_data["quantity_to_sell"]
-    sell_price = chat_data["sell_price"]
+def change_sell_price(update, context, groups):
+    coin_symbol = context.user_data.get("coin_symbol")
+    quantity_to_sell = context.user_data.get("quantity_to_sell")
+    sell_price = context.user_data.get("sell_price")
 
     if len(groups) > 1:  # manual quantity and price entry
         quantity_to_sell = float(groups[0])
@@ -155,9 +154,9 @@ def change_sell_price(bot, update, chat_data, groups):
 
     cancel_btn = [KeyboardButton(KeyboardEnum.CANCEL.clean())]
 
-    chat_data["coin_symbol"] = coin_symbol
-    chat_data["quantity_to_sell"] = quantity_to_sell
-    chat_data["sell_price"] = new_sell_price
+    context.user_data["coin_symbol"] = coin_symbol
+    context.user_data["quantity_to_sell"] = quantity_to_sell
+    context.user_data["sell_price"] = new_sell_price
 
     reply_mrk = ReplyKeyboardMarkup(
         build_menu(buttons, n_cols=2, footer_buttons=cancel_btn), resize_keyboard=True
@@ -169,10 +168,10 @@ def change_sell_price(bot, update, chat_data, groups):
     return WorkflowEnum.TRADE_CHANGE_SELL_PRICE
 
 
-def place_sell_order(bot, update, chat_data):
-    coin_symbol = chat_data["coin_symbol"]
-    quantity_to_sell = "{:06.4f}".format(chat_data["quantity_to_sell"])
-    sell_price = "{:06.8f}".format(chat_data["sell_price"])
+def place_sell_order(update, context):
+    coin_symbol = context.user_data.get("coin_symbol")
+    quantity_to_sell = "{:06.4f}".format(context.user_data.get("quantity_to_sell"))
+    sell_price = "{:06.8f}".format(context.user_data.get("sell_price"))
 
     order_id = bittrex.sell_order(
         quantity_to_sell=quantity_to_sell,

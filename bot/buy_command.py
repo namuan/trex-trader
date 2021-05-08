@@ -52,7 +52,7 @@ def buy_setup(dispatcher):
 
 
 @restrict_access
-def buy_cmd(bot, update, chat_data):
+def buy_cmd(update, context):
     reply_msg = "Choose currency"
 
     cancel_btn = [KeyboardButton(KeyboardEnum.CANCEL.clean())]
@@ -66,11 +66,11 @@ def buy_cmd(bot, update, chat_data):
     return WorkflowEnum.TRADE_CALCULATE_BUY_COST
 
 
-def change_order_size(bot, update, chat_data, groups):
-    minimum_quantity_to_buy = chat_data["minimum_quantity_to_buy"]
-    coin_symbol = chat_data["coin_symbol"]
-    ask_price = chat_data["buy_price"]
-    existing_quantity = chat_data["quantity_to_buy"]
+def change_order_size(update, context, groups):
+    minimum_quantity_to_buy = context.user_data.get("minimum_quantity_to_buy")
+    coin_symbol = context.user_data.get("coin_symbol")
+    ask_price = context.user_data.get("buy_price")
+    existing_quantity = context.user_data.get("quantity_to_buy")
 
     if len(groups) > 1:  # manual quantity and price entry
         new_quantity_to_buy = float(groups[0])
@@ -81,9 +81,9 @@ def change_order_size(bot, update, chat_data, groups):
             size_percent_change / 100
         )
 
-    chat_data["minimum_quantity_to_buy"] = minimum_quantity_to_buy
-    chat_data["quantity_to_buy"] = new_quantity_to_buy
-    chat_data["buy_price"] = ask_price
+    context.user_data["minimum_quantity_to_buy"] = minimum_quantity_to_buy
+    context.user_data["quantity_to_buy"] = new_quantity_to_buy
+    context.user_data["buy_price"] = ask_price
 
     _, commission, total = bittrex.trade_commission(new_quantity_to_buy, ask_price)
 
@@ -119,14 +119,14 @@ def change_order_size(bot, update, chat_data, groups):
     return WorkflowEnum.TRADE_SELECT_BUY_ORDER_SIZE
 
 
-def calculate_buy_order_size(bot, update, chat_data):
+def calculate_buy_order_size(update, context):
     currency = update.message.text
     coin_symbol = "BTC-{}".format(currency)
 
     price_info = bittrex.get_price(coin_symbol)
     if not price_info:
         return cancel(
-            bot, update, "Unable to retrieve price for {}".format(coin_symbol)
+            update, context, text="Unable to retrieve price for {}".format(coin_symbol)
         )
 
     ask_price = price_info.get("Ask")
@@ -137,10 +137,10 @@ def calculate_buy_order_size(bot, update, chat_data):
 
     _, commission, total = bittrex.trade_commission(minimum_quantity_to_buy, ask_price)
 
-    chat_data["minimum_quantity_to_buy"] = minimum_quantity_to_buy
-    chat_data["coin_symbol"] = coin_symbol
-    chat_data["quantity_to_buy"] = minimum_quantity_to_buy
-    chat_data["buy_price"] = ask_price
+    context.user_data["minimum_quantity_to_buy"] = minimum_quantity_to_buy
+    context.user_data["coin_symbol"] = coin_symbol
+    context.user_data["quantity_to_buy"] = minimum_quantity_to_buy
+    context.user_data["buy_price"] = ask_price
 
     reply_msg = (
         "{} minimum order size is {:06.8f}.\n"
@@ -167,10 +167,10 @@ def calculate_buy_order_size(bot, update, chat_data):
     return WorkflowEnum.TRADE_SELECT_BUY_ORDER_SIZE
 
 
-def place_buy_order(bot, update, chat_data):
-    coin_symbol = chat_data["coin_symbol"]
-    quantity_to_buy = "{:06.4f}".format(chat_data["quantity_to_buy"])
-    buy_price = "{:06.8f}".format(chat_data["buy_price"])
+def place_buy_order(update, context):
+    coin_symbol = context.user_data.get("coin_symbol")
+    quantity_to_buy = "{:06.4f}".format(context.user_data.get("quantity_to_buy"))
+    buy_price = "{:06.8f}".format(context.user_data.get("buy_price"))
 
     order_id = bittrex.buy_order(
         quantity_to_buy=quantity_to_buy,

@@ -14,7 +14,7 @@ def open_order_setup(dispatcher):
 
 # Show the last trade price for a currency
 @restrict_access
-def open_order_cmd(bot, update, chat_data):
+def open_order_cmd(update, context):
     open_orders = bittrex.get_open_orders()
     if not open_orders:
         update.message.reply_text("No open orders found", reply_markup=keyboard_cmds())
@@ -33,7 +33,7 @@ def open_order_cmd(bot, update, chat_data):
         )
         select_order_text.append("*{}*: {}".format(idx + 1, order_text))
         oo["order_text"] = order_text
-        chat_data[order_id] = oo
+        context.user_data[order_id] = oo
         inline_keyboards.append(InlineKeyboardButton(idx + 1, callback_data=order_id))
 
     reply_markup = InlineKeyboardMarkup([inline_keyboards])

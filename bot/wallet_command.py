@@ -9,7 +9,7 @@ from . import restrict_access
 
 # Get balance of all currencies
 @restrict_access
-def wallets_cmd(bot, update, chat_data):
+def wallets_cmd(update, context):
     wallets_msg = check_wallets()
     update.message.reply_text(wallets_msg, parse_mode=ParseMode.MARKDOWN)
 

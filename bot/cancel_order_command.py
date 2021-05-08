@@ -24,12 +24,12 @@ def cancel_order_setup(dispatcher):
 
 # Show the last trade price for a currency
 @restrict_access
-def cancel_order_cmd(bot, update, chat_data):
-    selected_order = chat_data["selected_order"]
+def cancel_order_cmd(update, context):
+    selected_order = context.user_data.get("selected_order")
     if not selected_order:
-        return cancel(bot, update, "No selected order")
+        return cancel(update, context, text="No selected order")
 
-    order_text = chat_data[selected_order].get("order_text")
+    order_text = context.user_data.get(selected_order).get("order_text")
     update.message.reply_text(
         "Are you sure about cancelling {}?".format(order_text),
         reply_markup=keyboard_confirm(),
@@ -39,12 +39,12 @@ def cancel_order_cmd(bot, update, chat_data):
     return WorkflowEnum.ORDER_CANCEL
 
 
-def order_cancel(bot, update, chat_data):
+def order_cancel(update, context):
     if update.message.text == KeyboardEnum.NO.clean():
-        return cancel(bot, update)
+        return cancel(update, context)
 
-    selected_order = chat_data["selected_order"]
-    order_text = chat_data[selected_order].get("order_text")
+    selected_order = context.user_data.get("selected_order")
+    order_text = context.user_data.get(selected_order).get("order_text")
 
     bittrex.cancel_order(order_id=selected_order)
 
@@ -55,6 +55,6 @@ def order_cancel(bot, update, chat_data):
     )
 
     # Reset chat_data
-    chat_data["selected_order"] = None
+    context.user_data["selected_order"] = None
 
     return ConversationHandler.END

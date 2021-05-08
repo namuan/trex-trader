@@ -3,21 +3,22 @@ export REMOTEDIR=${PROJECTNAME}-v1
 
 .SILENT: ;               # no need for @
 
-venv: ## Setup Virtual Env
+setup: ## Setup Virtual Env
 	python3 -m venv venv
-	./venv/bin/pip install -r requirements.txt
+	./venv/bin/pip3 install -r requirements/dev.txt
 
 deps: ## Install dependencies
-	./venv/bin/pip install -r requirements.txt
+	./venv/bin/pip3 install -r requirements/dev.txt
 
-lint: clean ## Runs black for code formatting
-	./venv/bin/black bot common config exchanges --exclude generated
+lint: ## Run black for code formatting
+	./venv/bin/black . --exclude venv
 
-requirements: ## Sets up required dependencies
-	./venv/bin/pip install -r requirements.txt
-
-clean: ## Cleans all cached files
+clean: ## Clean package
 	find . -type d -name '__pycache__' | xargs rm -rf
+	rm -rf build dist
+
+bpython: ## Run bpython
+	./venv/bin/bpython
 
 deployapp: clean ## Deploy application
 	ssh ${PROJECTNAME} -C "mkdir -vp ./${REMOTEDIR}"
@@ -28,17 +29,21 @@ deployapp: clean ## Deploy application
 				bot \
 				common \
 				scripts \
-				requirements.txt \
+				requirements \
 				telegram-trex-trader.py \
 				${PROJECTNAME}:./${REMOTEDIR}/
 
 ssh: ## ssh into project server
 	ssh ${PROJECTNAME}
 
-restart: ## Restarts supervisor
-	ssh ${PROJECTNAME} -C "sh scripts/start_screen.sh telegram-trex-trader \"cd ${REMOTEDIR}; python3.6 telegram-trex-trader.py\""
+start: deployapp ## Restarts supervisor
+	ssh ${PROJECTNAME} -C 'bash -l -c "./${REMOTEDIR}/scripts/setup_apps.sh"'
 
-run: lint ## Runs the bot locally
+stop: deployapp ## Stop any running screen session on the server
+	ssh ${PROJECTNAME} -C 'bash -l -c "./${REMOTEDIR}/scripts/stop_apps.sh"'
+
+
+local: lint ## Runs the bot locally
 	./venv/bin/python3 telegram-trex-trader.py
 
 .PHONY: help
