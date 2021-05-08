@@ -37,10 +37,10 @@ ssh: ## ssh into project server
 	ssh ${PROJECTNAME}
 
 start: deployapp ## Restarts supervisor
-	ssh ${PROJECTNAME} -C 'bash -l -c "./${REMOTEDIR}/scripts/setup_apps.sh"'
+	ssh ${PROJECTNAME} -C 'bash -l -c "./${REMOTEDIR}/scripts/setup_apps.sh ${REMOTEDIR}"'
 
 stop: deployapp ## Stop any running screen session on the server
-	ssh ${PROJECTNAME} -C 'bash -l -c "./${REMOTEDIR}/scripts/stop_apps.sh"'
+	ssh ${PROJECTNAME} -C 'bash -l -c "./${REMOTEDIR}/scripts/stop_apps.sh ${REMOTEDIR}"'
 
 
 local: lint ## Runs the bot locally
