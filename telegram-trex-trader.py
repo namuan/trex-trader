@@ -23,7 +23,7 @@ def handle_inline_option(bot, update, chat_data):
 
 
 if __name__ == "__main__":
-    dispatcher.add_error_handler(handle_telegram_error)
+    # dispatcher.add_error_handler(handle_telegram_error)
 
     # Add command handlers to dispatcher
     dispatcher.add_handler(CommandHandler("start", start_cmd))

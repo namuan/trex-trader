@@ -1,7 +1,6 @@
 requests
-telegram
 logzero
-git+https://github.com/ericsomdahl/python-bittrex@master
-python-telegram-bot
+python-bittrex==0.3.0
+python-telegram-bot==13.5
 expiringdict
 arrow
